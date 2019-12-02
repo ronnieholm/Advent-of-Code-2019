@@ -15,22 +15,13 @@ namespace Day02
 
         static void Test()
         {
-            bool Compare(int[] m1, int[] m2)
-            {
-                if (m1.Length != m2.Length)
-                    return false;
-                
-                for (var i = 0; i < m1.Length; i++)
-                    if (m1[i] != m2[i])
-                        return false;
-
-                return true;
-            }
-
             var m1 = LoadMemory("1,9,10,3,2,3,11,0,99,30,40,50");
             var m2 = LoadMemory("3500,9,10,70,2,3,11,0,99,30,40,50");
             Execute(m1);
-            Debug.Assert(Compare(m1, m2));
+
+            Debug.Assert(m1.Length == m2.Length);
+            for (var i = 0; i < m1.Length; i++)
+                Debug.Assert(m1[i] == m2[i]);
         }
 
         static int[] LoadMemory(string s)
