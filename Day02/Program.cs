@@ -8,52 +8,29 @@ namespace Day02
     {
         static void Main(string[] args)
         {
-            // Test
+            Test();
+            Part1();
+            Part2();
+        }       
+
+        static void Test()
+        {
+            bool Compare(int[] m1, int[] m2)
+            {
+                if (m1.Length != m2.Length)
+                    return false;
+                
+                for (var i = 0; i < m1.Length; i++)
+                    if (m1[i] != m2[i])
+                        return false;
+
+                return true;
+            }
+
             var m1 = LoadMemory("1,9,10,3,2,3,11,0,99,30,40,50");
             var m2 = LoadMemory("3500,9,10,70,2,3,11,0,99,30,40,50");
             Execute(m1);
             Debug.Assert(Compare(m1, m2));
-
-            var input = File.ReadAllText("Input.txt");
-            var memory = LoadMemory(input);
-
-            // Part 1
-            memory[1] = 12;
-            memory[2] = 2;
-            Execute(memory);
-            Debug.Assert(memory[0] == 3654868);
-
-            // Part 2
-            for (var i = 0; i <= 99; i++)
-            {
-                for (var j = 0; j <= 99; j++)
-                {
-                    memory = LoadMemory(input);
-                    memory[1] = i;
-                    memory[2] = j;                   
-                    Execute(memory);
-                    if (memory[0] == 19690720)
-                    {
-                        var nounVerb = $"{i}{j}";
-                        Console.WriteLine(nounVerb);
-                        Debug.Assert(nounVerb == "7014");
-                        break;
-                    }
-
-                }
-            }
-        }       
-
-        static bool Compare(int[] m1, int[] m2)
-        {
-            if (m1.Length != m2.Length)
-                return false;
-            
-            for (var i = 0; i < m1.Length; i++)
-                if (m1[i] != m2[i])
-                    return false;
-
-            return true;
         }
 
         static int[] LoadMemory(string s)
@@ -65,6 +42,38 @@ namespace Day02
                 memory[i] = int.Parse(strings[i]);
 
             return memory;
+        }
+
+        static void Part1()
+        {
+            var input = File.ReadAllText("Input.txt");
+            var memory = LoadMemory(input);
+            memory[1] = 12;
+            memory[2] = 2;
+            Execute(memory);
+            Debug.Assert(memory[0] == 3654868);
+        }
+
+        static void Part2()
+        {
+            var input = File.ReadAllText("Input.txt");
+            for (var i = 0; i <= 99; i++)
+            {
+                for (var j = 0; j <= 99; j++)
+                {
+                    var memory = LoadMemory(input);
+                    memory[1] = i;
+                    memory[2] = j;                   
+                    Execute(memory);
+                    if (memory[0] == 19690720)
+                    {
+                        var nounVerb = $"{i}{j}";
+                        Debug.Assert(nounVerb == "7014");
+                        break;
+                    }
+
+                }
+            }
         }
 
         static void Execute(int[] memory)
