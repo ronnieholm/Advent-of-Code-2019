@@ -48,18 +48,17 @@ namespace Day02
         static void Part2()
         {
             var input = File.ReadAllText("Input.txt");
-            for (var i = 0; i <= 99; i++)
+            for (var noun = 0; noun <= 99; noun++)
             {
-                for (var j = 0; j <= 99; j++)
+                for (var verb = 0; verb <= 99; verb++)
                 {
                     var memory = LoadMemory(input);
-                    memory[1] = i;
-                    memory[2] = j;                   
+                    memory[1] = noun;
+                    memory[2] = verb;  
                     Execute(memory);
                     if (memory[0] == 19690720)
                     {
-                        var nounVerb = $"{i}{j}";
-                        Debug.Assert(nounVerb == "7014");
+                        Debug.Assert(7014 == 100 * noun + verb);
                         break;
                     }
 
@@ -69,12 +68,12 @@ namespace Day02
 
         static void Execute(int[] memory)
         {
-            for (var i = 0; i < memory.Length; i += 4)
+            for (var ip = 0; ip < memory.Length; ip += 4)
             {
-                var opcode = memory[i];
-                var inputAddress1 = memory[i + 1];
-                var inputAddress2 = memory[i + 2];
-                var outputAddress = memory[i + 3];
+                var opcode = memory[ip];
+                var inputAddress1 = memory[ip + 1];
+                var inputAddress2 = memory[ip + 2];
+                var outputAddress = memory[ip + 3];
 
                 switch (opcode)
                 {
