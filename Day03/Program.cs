@@ -44,8 +44,7 @@ namespace Day03
 
         static int ShortestSignalDelay(List<(int, int)> p1, List<(int, int)> p2)
         {
-            var intersections = p1.Intersect(p2).ToList();
-
+            var intersections = p1.Intersect(p2);
             var distances = new List<int>();
             foreach (var i in intersections)
             {
