@@ -53,36 +53,27 @@ namespace Day05
             var input = File.ReadAllText("Input.txt");
             var memory = LoadMemory(input);
             Execute(memory);                        
-            // Output: 3000000006731945 with 6731945 being the diagnosics code.            
+            // Output: 3000000006731945 with 6731945 being the diagnosic code.            
         }
 
         static void Part2()
         {
             var input = File.ReadAllText("Input.txt");
-            for (var noun = 0; noun <= 99; noun++)
-            {
-                for (var verb = 0; verb <= 99; verb++)
-                {
-                    var memory = LoadMemory(input);
-                    memory[1] = noun;
-                    memory[2] = verb;  
-                    Execute(memory);
-                    if (memory[0] == 19690720)
-                    {
-                        Debug.Assert(7014 == 100 * noun + verb);
-                        break;
-                    }
-
-                }
-            }
+            var memory = LoadMemory(input);
+            Execute(memory);
+            // Input: 5, Output: 9571668 which is the diagnostic code.
         }
 
         enum Opcode
         {
             Add = 1,
-            Mul,
-            Input,
-            Output,
+            Mul = 2,
+            Input = 3,
+            Output = 4,
+            JumpIfTrue = 5,
+            JumpIfFalse = 6,
+            LessThan = 7,
+            Equals = 8,
             Halt = 99
         }
 
@@ -122,41 +113,85 @@ namespace Day05
                 {
                     case Opcode.Add:
                     {
-                        var input1 = memory[ip + 1];
-                        var input2 = memory[ip + 2];
-                        var output = memory[ip + 3];
-                        var arg1 = Resolve(instruction, 3, input1);
-                        var arg2 = Resolve(instruction, 4, input2);
+                        var p1 = memory[ip + 1];
+                        var p2 = memory[ip + 2];
+                        var p3 = memory[ip + 3];
+                        var p1Value = Resolve(instruction, 3, p1);
+                        var p2Value = Resolve(instruction, 4, p2);
                         Debug.Assert(ToParameterMode(instruction, 5) == 0);
-                        memory[output] = arg1 + arg2;
+                        memory[p3] = p1Value + p2Value;
                         ip += 4;
                         break;
                     }
                     case Opcode.Mul:
                     {
-                        var input1 = memory[ip + 1];
-                        var input2 = memory[ip + 2];
-                        var output = memory[ip + 3];
-                        var arg1 = Resolve(instruction, 3, input1);
-                        var arg2 = Resolve(instruction, 4, input2);
+                        var p1 = memory[ip + 1];
+                        var p2 = memory[ip + 2];
+                        var p3 = memory[ip + 3];
+                        var p1Value = Resolve(instruction, 3, p1);
+                        var p2Value = Resolve(instruction, 4, p2);
                         Debug.Assert(ToParameterMode(instruction, 5) == 0);
-                        memory[output] = arg1 * arg2;
+                        memory[p3] = p1Value * p2Value;
                         ip += 4;
                         break;
                     }
                     case Opcode.Input:
                     {
-                        var outputAddress = memory[ip + 1];
-                        var input = Console.ReadLine();
-                        memory[outputAddress] = int.Parse(input);
+                        var p1 = memory[ip + 1];
+                        var value = Console.ReadLine();
+                        memory[p1] = int.Parse(value);
                         ip += 2;
                         break;
                     }
                     case Opcode.Output:
                     {
-                        var inputAddress = memory[ip + 1];
-                        Console.Write(memory[inputAddress]);
+                        var value = memory[ip + 1];
+                        Console.Write(memory[value]);
                         ip += 2;
+                        break;
+                    }
+                    case Opcode.JumpIfTrue:
+                    {
+                        var p1 = memory[ip + 1];
+                        var p2 = memory[ip + 2];
+                        var p1Value = Resolve(instruction, 3, p1);
+                        var p2Value = Resolve(instruction, 4, p2);
+                        Debug.Assert(ToParameterMode(instruction, 5) == 0);
+                        ip = p1Value != 0 ? p2Value : ip + 3;
+                        break;
+                    }
+                    case Opcode.JumpIfFalse:
+                    {
+                        var p1 = memory[ip + 1];
+                        var p2 = memory[ip + 2];
+                        var p1Value = Resolve(instruction, 3, p1);
+                        var p2Value = Resolve(instruction, 4, p2);
+                        Debug.Assert(ToParameterMode(instruction, 5) == 0);
+                        ip = p1Value == 0 ? p2Value : ip + 3;
+                        break;
+                    }
+                    case Opcode.LessThan:
+                    {
+                        var p1 = memory[ip + 1];
+                        var p2 = memory[ip + 2];
+                        var p3 = memory[ip + 3];
+                        var p1Value = Resolve(instruction, 3, p1);
+                        var p2Value = Resolve(instruction, 4, p2);
+                        Debug.Assert(ToParameterMode(instruction, 5) == 0);
+                        memory[p3] = p1Value < p2Value ? 1 : 0;
+                        ip += 4;
+                        break;
+                    }
+                    case Opcode.Equals:
+                    {
+                        var p1 = memory[ip + 1];
+                        var p2 = memory[ip + 2];
+                        var p3 = memory[ip + 3];
+                        var p1Value = Resolve(instruction, 3, p1);
+                        var p2Value = Resolve(instruction, 4, p2);
+                        Debug.Assert(ToParameterMode(instruction, 5) == 0);
+                        memory[p3] = p1Value == p2Value ? 1 : 0;
+                        ip += 4;
                         break;
                     }
                     case Opcode.Halt:
