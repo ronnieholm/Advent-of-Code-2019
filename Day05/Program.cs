@@ -23,7 +23,7 @@ namespace Day05
 
             Test();
             Part1();
-            //Part2();
+            Part2();
         }       
 
         static void Test()
@@ -53,7 +53,7 @@ namespace Day05
             var input = File.ReadAllText("Input.txt");
             var memory = LoadMemory(input);
             Execute(memory);                        
-            // Output: 3000000006731945 with 6731945 being the diagnosic code.            
+            // Input: 1, Output: 3000000006731945 with 6731945 being the diagnosic code.  
         }
 
         static void Part2()
