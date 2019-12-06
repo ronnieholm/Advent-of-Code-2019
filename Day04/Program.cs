@@ -15,10 +15,15 @@ namespace Day04
 
         static void Test()
         {
-            bool Adjacancy(int i) => i >= 2;
-            Debug.Assert(Candidate("111111", Adjacancy));
-            Debug.Assert(!Candidate("223450", Adjacancy));
-            Debug.Assert(!Candidate("123789", Adjacancy));
+            bool AtLeastTwo(int i) => i >= 2;        
+            Debug.Assert(Candidate("111111", AtLeastTwo));
+            Debug.Assert(!Candidate("223450", AtLeastTwo));
+            Debug.Assert(!Candidate("123789", AtLeastTwo));
+
+            bool ExactlyTwo(int i) => i == 2;        
+            Debug.Assert(Candidate("112233", ExactlyTwo));
+            Debug.Assert(!Candidate("123444", ExactlyTwo));
+            Debug.Assert(Candidate("111122", ExactlyTwo));
         }
 
         static void Part1()
