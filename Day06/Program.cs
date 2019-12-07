@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Orbits = System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>>;
 
 namespace Day06
 {
@@ -36,8 +35,8 @@ namespace Day06
 
                 }).ToArray();
                 
-            var tree = ConstructAdjacencyMatrix(orbits);
-            Debug.Assert(CalculateOrbitCountChecksum(tree) == 42);
+            var map = ConstructAdjacencyMatrix(orbits);
+            Debug.Assert(CalculateOrbitCountChecksum(map) == 42);
         }
 
         static void Part1()
@@ -51,8 +50,8 @@ namespace Day06
 
                 }).ToArray();
                 
-            var tree = ConstructAdjacencyMatrix(orbits);
-            Debug.Assert(CalculateOrbitCountChecksum(tree) == 186597);            
+            var map = ConstructAdjacencyMatrix(orbits);
+            Debug.Assert(CalculateOrbitCountChecksum(map) == 186597);            
         }
 
         static void Part2()
@@ -66,32 +65,32 @@ namespace Day06
 
                 }).ToArray();
                 
-            var tree = ConstructAdjacencyMatrix(orbits);
+            var map = ConstructAdjacencyMatrix(orbits);
 
             var youPath = new List<string>();
-            PathToCenterOfMass(tree, "YOU", youPath);
+            PathToCenterOfMass(map, "YOU", youPath);
 
             var sanPath = new List<string>();
-            PathToCenterOfMass(tree, "SAN", sanPath);
+            PathToCenterOfMass(map, "SAN", sanPath);
 
-            int transfers = 0;
+            int orbitalTransfers = 0;
             foreach (var o in youPath)
             {
                 if (sanPath.Contains(o))
                     break;
-                transfers++;
+                orbitalTransfers++;
             }
             foreach (var o in sanPath)
             {
                 if (youPath.Contains(o))
                     break;
-                transfers++;
+                orbitalTransfers++;
             }
 
-            Debug.Assert(transfers == 412);
+            Debug.Assert(orbitalTransfers == 412);
         }
 
-        static void PathToCenterOfMass(Orbits orbits, string orbiter, List<string> path)
+        static void PathToCenterOfMass(Dictionary<string, List<string>> orbits, string orbiter, List<string> path)
         {            
             var orbit = orbits.Single(o => o.Value.Contains(orbiter));
             if (orbit.Key == "COM")
@@ -104,22 +103,21 @@ namespace Day06
             PathToCenterOfMass(orbits, orbit.Key, path);
         }
 
-        static Orbits ConstructAdjacencyMatrix((string reference, string orbiter)[] orbits)
+        static Dictionary<string, List<string>> ConstructAdjacencyMatrix((string reference, string orbiter)[] orbits)
         {
-            // Construct adjacency matrix.
-            var tree = new Orbits();
+            var map = new Dictionary<string, List<string>>();
             foreach (var (r, o) in orbits)
             {                
-                var success = tree.TryGetValue(r, out var orbiters);
+                var success = map.TryGetValue(r, out var orbiters);
                 if (success)
                     orbiters.Add(o);
                 else
-                    tree[r] = new List<string> { o };
+                    map[r] = new List<string> { o };
             }
-            return tree;
+            return map;
         }
 
-        static int CalculateOrbitCountChecksum(Orbits orbits)
+        static int CalculateOrbitCountChecksum(Dictionary<string, List<string>> orbits)
         {
             var orbitCountChecksum = 0;
             foreach (var r in orbits)
@@ -127,7 +125,7 @@ namespace Day06
             return orbitCountChecksum;
         }
 
-        static int IndirectOrbits(Orbits orbits, string reference)
+        static int IndirectOrbits(Dictionary<string, List<string>> orbits, string reference)
         {
             var orbitCountChecksum = 0;
             var success = orbits.TryGetValue(reference, out var orbiters);
