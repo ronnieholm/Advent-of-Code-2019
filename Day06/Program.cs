@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Tree = System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>>;
+using Orbits = System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>>;
 
 namespace Day06
 {
@@ -56,32 +56,40 @@ namespace Day06
 
         static void Part2()
         {
-            
+            // 1. What am YOU orbiting?
+            // 2. What is SAN orbiting?
+            // 3. Find common node
+            // 4. YOU to common + SAN to to common            
         }
 
-        static int CalculateOrbitCountChecksum((string parent, string child)[] orbits)
+        static int CalculateOrbitCountChecksum((string reference, string orbiter)[] orbits)
         {
             // Construct adjacency matrix.
-            var tree = new Tree();
-            foreach (var o in orbits)
+            var tree = new Orbits();
+            foreach (var (r, o) in orbits)
             {                
-                if (!tree.ContainsKey(o.parent))
-                    tree[o.parent] = new List<string>();
-                tree[o.parent].Add(o.child);
-            }
+                var success = tree.TryGetValue(r, out var orbiters);
+                if (success)
+                    orbiters.Add(o);
+                else
+                    tree[r] = new List<string> { o };
+            }            
 
             var orbitCountChecksum = 0;
-            foreach (var kvp in tree)
-                foreach (var child in kvp.Value)
-                    orbitCountChecksum += IndirectOrbits(tree, child);
-
+            foreach (var r in tree)
+                orbitCountChecksum += IndirectOrbits(tree, r.Key);
             return orbitCountChecksum;
         }
 
-        static int IndirectOrbits(Tree tree, string orbit)
+        static int IndirectOrbits(Orbits orbits, string reference)
         {
-            var parent = tree.Keys.SingleOrDefault(k => tree[k].Contains(orbit));
-            return parent == null ? 0 : 1 + IndirectOrbits(tree, parent);
+            var orbitCountChecksum = 0;
+            var success = orbits.TryGetValue(reference, out var orbiters);
+            if (success)
+                foreach (var orbiter in orbiters)
+                    orbitCountChecksum += IndirectOrbits(orbits, orbiter) + 1;
+
+            return orbitCountChecksum;
         }
     }
 }
