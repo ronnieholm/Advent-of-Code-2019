@@ -12,7 +12,7 @@ namespace Day07
         {
             Test();
             Part1();
-            //Part2();
+            Part2();
         }
 
         static void Swap(ref int a, ref int b)
@@ -22,7 +22,6 @@ namespace Day07
             b = temp;
         }
 
-        // Improvement: turn into IEnumerable with yield statement.
         static void Permutations(int[] list, int a, int b, List<int[]> result)
         {
             if (a == b)
@@ -44,13 +43,15 @@ namespace Day07
         }
 
         static void Test()        
-        {             
-            // Debug.Assert(TrusterSignalSinglePass("3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0", 4, 3, 2, 1, 0) == 43210);
-            // Debug.Assert(TrusterSignalSinglePass("3,23,3,24,1002,24,10,24,1002,23,-1,23,101,5,23,23,1,24,23,23,4,23,99,0,0", 0, 1, 2, 3, 4) == 54321);
-            // Debug.Assert(TrusterSignalSinglePass("3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33,1002,33,7,33,1,33,31,31,1,32,31,31,4,31,99,0,0,0", 1, 0, 4, 3, 2) == 65210);
+        {   
+            // Part 1          
+            Debug.Assert(TrusterSignalSinglePass("3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0", 4, 3, 2, 1, 0) == 43210);
+            Debug.Assert(TrusterSignalSinglePass("3,23,3,24,1002,24,10,24,1002,23,-1,23,101,5,23,23,1,24,23,23,4,23,99,0,0", 0, 1, 2, 3, 4) == 54321);
+            Debug.Assert(TrusterSignalSinglePass("3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33,1002,33,7,33,1,33,31,31,1,32,31,31,4,31,99,0,0,0", 1, 0, 4, 3, 2) == 65210);
 
+            // Part 2
             Debug.Assert(TrusterSignalFeedbackLoop("3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5", 9, 8, 7, 6, 5) == 139629729);
-            //Debug.Assert(TrusterSignalFeedbackLoop("3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,-5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10", 9, 8, 7, 6, 5) == 18216);
+            Debug.Assert(TrusterSignalFeedbackLoop("3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,-5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10", 9, 7, 8, 5, 6) == 18216);
         }        
 
         static void Part1()
@@ -78,11 +79,11 @@ namespace Day07
             var outC = 0;
             var outD = 0;
             var outE = 0;
-            Execute(LoadMemory(program), new Func<int>[] {() => a, () => 0 }, o => outA = o);
-            Execute(LoadMemory(program), new Func<int>[] {() => b, () => outA }, o => outB = o);
-            Execute(LoadMemory(program), new Func<int>[] {() => c, () => outB }, o => outC = o);
-            Execute(LoadMemory(program), new Func<int>[] {() => d, () => outC }, o => outD = o);
-            Execute(LoadMemory(program), new Func<int>[] {() => e, () => outD }, o => outE = o);
+            Execute(LoadMemory(program), 0, new Func<int>[] {() => a, () => 0 }, (o, _) => outA = o);
+            Execute(LoadMemory(program), 0, new Func<int>[] {() => b, () => outA }, (o, _) => outB = o);
+            Execute(LoadMemory(program), 0, new Func<int>[] {() => c, () => outB }, (o, _) => outC = o);
+            Execute(LoadMemory(program), 0, new Func<int>[] {() => d, () => outC }, (o, _) => outD = o);
+            Execute(LoadMemory(program), 0, new Func<int>[] {() => e, () => outD }, (o, _) => outE = o);
             return outE;
         }
 
@@ -93,22 +94,38 @@ namespace Day07
             var outC = 0;
             var outD = 0;
             var outE = 0;
+            var aIp = 0;
+            var bIp = 0;
+            var cIp = 0;
+            var dIp = 0;
+            var eIp = 0;
             var program1 = LoadMemory(program);
             var program2 = LoadMemory(program);
             var program3 = LoadMemory(program);
             var program4 = LoadMemory(program);
             var program5 = LoadMemory(program);
 
+            Execute(program1, 0, new Func<int>[] { () => a, () => 0 }, (o, ip) => { outA = o; aIp = ip; });
+            Execute(program2, 0, new Func<int>[] { () => b, () => outA }, (o, ip) => { outB = o; bIp = ip; });
+            Execute(program3, 0, new Func<int>[] { () => c, () => outB }, (o, ip) => { outC = o; cIp = ip; });
+            Execute(program4, 0, new Func<int>[] { () => d, () => outC }, (o, ip) => { outD = o; dIp = ip; });
+            Execute(program5, 0, new Func<int>[] { () => e, () => outD }, (o, ip) => { outE = o; eIp = ip; });
+
             while (true)
             {
-                Execute(program1, new Func<int>[] { () => a, () => 0 }, o => outA = o);
-                Execute(program2, new Func<int>[] { () => b, () => outA }, o => outB = o);
-                Execute(program3, new Func<int>[] { () => c, () => outB }, o => outC = o);
-                Execute(program4, new Func<int>[] { () => d, () => outC }, o => outD = o);
-                Execute(program5, new Func<int>[] { () => e, () => outD }, o => outE = o);
+                if (Execute(program1, aIp, new Func<int>[] { () => outE }, (o, ip) => { outA = o; aIp = ip; }) == ExitCondition.Halt)
+                    break;
+                if (Execute(program2, bIp, new Func<int>[] { () => outA }, (o, ip) => { outB = o; bIp = ip; }) == ExitCondition.Halt)
+                    break;
+                if (Execute(program3, cIp, new Func<int>[] { () => outB }, (o, ip) => { outC = o; cIp = ip; }) == ExitCondition.Halt)
+                    break;
+                if (Execute(program4, dIp, new Func<int>[] { () => outC }, (o, ip) => { outD = o; dIp = ip; }) == ExitCondition.Halt)
+                    break;
+                if (Execute(program5, eIp, new Func<int>[] { () => outD }, (o, ip) => { outE = o; eIp = ip; }) == ExitCondition.Halt)
+                    break;
             }
 
-            return 0;
+            return outE;
         }
 
         static void Part2()
@@ -126,11 +143,9 @@ namespace Day07
                 maxTrusterSignal = Math.Max(maxTrusterSignal, trusterSignal);
             }
 
-            
-            //Debug.Assert(maxTrusterSignal == 359142);            
+            Debug.Assert(maxTrusterSignal == 4374895);            
         }
 
-        // Rest of file is copied from Day 05
         static int[] LoadMemory(string s)
         {
             var strings = s.Split(',');
@@ -161,6 +176,13 @@ namespace Day07
             Immediate
         }
 
+        enum ExitCondition
+        {
+            None,
+            Output,
+            Halt
+        }
+
         static int Digit(int instruction, int position) => (instruction / (int)Math.Pow(10, position - 1)) % 10;
 
         static ParameterMode ToParameterMode(int instruction, int position)
@@ -170,9 +192,10 @@ namespace Day07
                 : ParameterMode.Immediate;
         }
 
-        static void Execute(int[] memory, Func<int>[] inputFns, Action<int> outputFn)
+        static ExitCondition Execute(int[] memory, int instructionPointer, Func<int>[] inputFns, Action<int, int> outputFn)
         {
             var inputRequests = 0;
+            var ip = instructionPointer;
 
             int Resolve(int instruction, int position, int address)
             {
@@ -184,7 +207,6 @@ namespace Day07
                     };
             }
 
-            var ip = 0;
             while (ip < memory.Length)
             {
                 var instruction = memory[ip];
@@ -224,10 +246,10 @@ namespace Day07
                     }
                     case Opcode.Output:
                     {
-                        var value = memory[ip + 1];
-                        outputFn(memory[value]);
+                        var value = memory[ip + 1];                        
                         ip += 2;
-                        break;
+                        outputFn(memory[value], ip);
+                        return ExitCondition.Output;
                     }
                     case Opcode.JumpIfTrue:
                     {
@@ -274,11 +296,13 @@ namespace Day07
                         break;
                     }
                     case Opcode.Halt:
-                        return;
+                        return ExitCondition.Halt;
                     default:
                         throw new Exception($"Unknown opcode: {opcode}");
                 }
-            }            
+            }    
+
+            return ExitCondition.None;        
         }
     }
 }
