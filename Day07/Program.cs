@@ -78,11 +78,11 @@ namespace Day07
             var outC = 0;
             var outD = 0;
             var outE = 0;
-            Execute(LoadMemory(program), 0, new Func<int>[] {() => a, () => 0 }, (o, _) => outA = o);
-            Execute(LoadMemory(program), 0, new Func<int>[] {() => b, () => outA }, (o, _) => outB = o);
-            Execute(LoadMemory(program), 0, new Func<int>[] {() => c, () => outB }, (o, _) => outC = o);
-            Execute(LoadMemory(program), 0, new Func<int>[] {() => d, () => outC }, (o, _) => outD = o);
-            Execute(LoadMemory(program), 0, new Func<int>[] {() => e, () => outD }, (o, _) => outE = o);
+            Execute(LoadMemory(program), 0, new[] { a, 0 }, (o, _) => outA = o);
+            Execute(LoadMemory(program), 0, new[] { b, outA }, (o, _) => outB = o);
+            Execute(LoadMemory(program), 0, new[] { c, outB }, (o, _) => outC = o);
+            Execute(LoadMemory(program), 0, new[] { d, outC }, (o, _) => outD = o);
+            Execute(LoadMemory(program), 0, new[] { e, outD }, (o, _) => outE = o);
             return outE;
         }
 
@@ -104,23 +104,23 @@ namespace Day07
             var program4 = LoadMemory(program);
             var program5 = LoadMemory(program);
 
-            Execute(program1, 0, new Func<int>[] { () => a, () => 0 }, (o, ip) => { outA = o; aIp = ip; });
-            Execute(program2, 0, new Func<int>[] { () => b, () => outA }, (o, ip) => { outB = o; bIp = ip; });
-            Execute(program3, 0, new Func<int>[] { () => c, () => outB }, (o, ip) => { outC = o; cIp = ip; });
-            Execute(program4, 0, new Func<int>[] { () => d, () => outC }, (o, ip) => { outD = o; dIp = ip; });
-            Execute(program5, 0, new Func<int>[] { () => e, () => outD }, (o, ip) => { outE = o; eIp = ip; });
+            Execute(program1, 0, new[] { a, 0 }, (o, ip) => { outA = o; aIp = ip; });
+            Execute(program2, 0, new[] { b, outA }, (o, ip) => { outB = o; bIp = ip; });
+            Execute(program3, 0, new[] { c, outB }, (o, ip) => { outC = o; cIp = ip; });
+            Execute(program4, 0, new[] { d, outC }, (o, ip) => { outD = o; dIp = ip; });
+            Execute(program5, 0, new[] { e, outD }, (o, ip) => { outE = o; eIp = ip; });
 
             while (true)
             {
-                if (Execute(program1, aIp, new Func<int>[] { () => outE }, (o, ip) => { outA = o; aIp = ip; }) == ExitCondition.Halt)
+                if (Execute(program1, aIp, new[] { outE }, (o, ip) => { outA = o; aIp = ip; }) == ExitCondition.Halt)
                     break;
-                if (Execute(program2, bIp, new Func<int>[] { () => outA }, (o, ip) => { outB = o; bIp = ip; }) == ExitCondition.Halt)
+                if (Execute(program2, bIp, new[] { outA }, (o, ip) => { outB = o; bIp = ip; }) == ExitCondition.Halt)
                     break;
-                if (Execute(program3, cIp, new Func<int>[] { () => outB }, (o, ip) => { outC = o; cIp = ip; }) == ExitCondition.Halt)
+                if (Execute(program3, cIp, new[] { outB }, (o, ip) => { outC = o; cIp = ip; }) == ExitCondition.Halt)
                     break;
-                if (Execute(program4, dIp, new Func<int>[] { () => outC }, (o, ip) => { outD = o; dIp = ip; }) == ExitCondition.Halt)
+                if (Execute(program4, dIp, new[] { outC }, (o, ip) => { outD = o; dIp = ip; }) == ExitCondition.Halt)
                     break;
-                if (Execute(program5, eIp, new Func<int>[] { () => outD }, (o, ip) => { outE = o; eIp = ip; }) == ExitCondition.Halt)
+                if (Execute(program5, eIp, new[] { outD }, (o, ip) => { outE = o; eIp = ip; }) == ExitCondition.Halt)
                     break;
             }
 
@@ -191,7 +191,7 @@ namespace Day07
                 : ParameterMode.Immediate;
         }
 
-        static ExitCondition Execute(int[] memory, int instructionPointer, Func<int>[] inputFns, Action<int, int> outputFn)
+        static ExitCondition Execute(int[] memory, int instructionPointer, int[] inputs, Action<int, int> outputFn)
         {
             var inputRequests = 0;
             var ip = instructionPointer;
@@ -239,7 +239,7 @@ namespace Day07
                     case Opcode.Input:
                     {
                         var p1 = memory[ip + 1];
-                        memory[p1] = inputFns[inputRequests++]();
+                        memory[p1] = inputs[inputRequests++];
                         ip += 2;
                         break;
                     }

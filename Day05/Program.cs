@@ -31,7 +31,7 @@ namespace Day05
         {
             var m1 = LoadMemory("1002,4,3,4,33");
             var m2 = LoadMemory("1002,4,3,4,99");
-            Execute(m1, new Func<int>[] { () => throw new Exception("Unused") }, (_) => throw new Exception("Unused"));
+            Execute(m1, new int[0] { }, (_) => throw new Exception("Unused"));
 
             Debug.Assert(m1.Length == m2.Length);
             for (var i = 0; i < m1.Length; i++)
@@ -54,7 +54,7 @@ namespace Day05
             var program = File.ReadAllText("Input.txt");
             var memory = LoadMemory(program);
             var output = "";
-            Execute(memory, new Func<int>[] { () => 1 }, (digit) => output += digit);
+            Execute(memory, new[] { 1 }, (digit) => output += digit);
             Debug.Assert(output == "3000000006731945");
         }
 
@@ -63,7 +63,7 @@ namespace Day05
             var input = File.ReadAllText("Input.txt");
             var memory = LoadMemory(input);
             var output = "";
-            Execute(memory, new Func<int>[] { () => 5 }, (digit) => output += digit);
+            Execute(memory, new[] { 5 }, (digit) => output += digit);
             Debug.Assert(output == "9571668");
         }
 
@@ -95,7 +95,7 @@ namespace Day05
                 : ParameterMode.Immediate;
         }
 
-        static void Execute(int[] memory, Func<int>[] inputFns, Action<int> outputFn)
+        static void Execute(int[] memory, int[] inputs, Action<int> outputFn)
         {
             var inputRequests = 0;
 
@@ -143,7 +143,7 @@ namespace Day05
                     case Opcode.Input:
                     {
                         var p1 = memory[ip + 1];
-                        memory[p1] = inputFns[inputRequests++]();
+                        memory[p1] = inputs[inputRequests++];
                         ip += 2;
                         break;
                     }
