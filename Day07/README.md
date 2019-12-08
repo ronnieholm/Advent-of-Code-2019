@@ -79,7 +79,7 @@ signal that can be sent to the thrusters?
 ## Part 2
 
 It's no good - in this configuration, the amplifiers can't generate a large
-enough output signal to produce the thrust you'll need. The Elves quickly talk
+enough output signal to produce the thrust you'll need. The Elves q1uickly talk
 you through rewiring the amplifiers into a feedback loop:
 
           O-------O  O-------O  O-------O  O-------O  O-------O
