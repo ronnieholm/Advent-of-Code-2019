@@ -39,14 +39,18 @@ namespace Day09
 
         static void Part2()
         {
-
+            var input = File.ReadAllText("Input.txt");
+            var memory = LoadMemory(input);
+            var output = "";
+            Execute(memory, 0, new[] { 2L }, (o, _) => output += o);
+            Debug.Assert(output == "50158");
         }
 
         // Remaining code adapted from Day07.
         static long[] LoadMemory(string s)
         {
             var strings = s.Split(',');
-            var memory = new long[/* 1 MB */ 1024 * 1024];
+            var memory = new long[2048];
 
             for (var i = 0; i < strings.Length; i++)
                 memory[i] = long.Parse(strings[i]);
