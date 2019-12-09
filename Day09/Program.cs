@@ -18,14 +18,14 @@ namespace Day09
             // Part 1
             var m1 = LoadMemory("109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99");
             var output = "";
-            Execute(m1, 0, new long[] {}, (o, _) => output += o);
+            Execute(m1, new long[] {}, o => output += o);
             Debug.Assert(output == "1091204-1100110011001008100161011006101099");
 
             var m2 = LoadMemory("1102,34915192,34915192,7,4,7,99,0");
-            Execute(m2, 0, new long[] {}, (o, _) => Debug.Assert(o == 1_219_070_632_396_864));
+            Execute(m2, new long[] {}, o => Debug.Assert(o == 1_219_070_632_396_864));
 
             var m3 = LoadMemory("104,1125899906842624,99");
-            Execute(m3, 0, new long[] {}, (o, _) => Debug.Assert(o == 1125899906842624));
+            Execute(m3, new long[] {}, o=> Debug.Assert(o == 1125899906842624));
         }
 
         static void Part1()
@@ -33,7 +33,7 @@ namespace Day09
             var input = File.ReadAllText("Input.txt");
             var memory = LoadMemory(input);
             var output = "";
-            Execute(memory, 0, new[] { 1L }, (o, _) => output += o);
+            Execute(memory, new[] { 1L }, o => output += o);
             Debug.Assert(output == "3013554615");
         }
 
@@ -42,7 +42,7 @@ namespace Day09
             var input = File.ReadAllText("Input.txt");
             var memory = LoadMemory(input);
             var output = "";
-            Execute(memory, 0, new[] { 2L }, (o, _) => output += o);
+            Execute(memory, new[] { 2L }, o => output += o);
             Debug.Assert(output == "50158");
         }
 
@@ -93,10 +93,10 @@ namespace Day09
             };
         }
 
-        static void Execute(long[] memory, long instructionPointer, long[] inputs, Action<long, long> outputFn)
+        static void Execute(long[] memory, long[] inputs, Action<long> outputFn)
         {
             var inputRequests = 0L;
-            var ip = instructionPointer;
+            var ip = 0L;
             var relativeOffset = 0L;
 
             long ResolveRead(long instruction, long position, long address)
@@ -162,7 +162,7 @@ namespace Day09
                         var p = memory[ip + 1];
                         var pValue = ResolveRead(instruction, 3, p);
                         ip += 2;
-                        outputFn(pValue, ip);
+                        outputFn(pValue);
                         break;
                     }
                     case Opcode.JumpIfTrue:
