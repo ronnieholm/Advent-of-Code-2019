@@ -145,6 +145,7 @@ namespace Day07
             Debug.Assert(maxTrusterSignal == 4374895);            
         }
 
+        // Remaining code adapted from Day05.
         static int[] LoadMemory(string s)
         {
             var strings = s.Split(',');
