@@ -106,7 +106,7 @@ namespace Day09
                 {
                     ParameterMode.Position => memory[address],
                     ParameterMode.Immediate => address,
-                    ParameterMode.Relative => memory[relativeOffset + address],
+                    ParameterMode.Relative => memory[address + relativeOffset],
                     _ => throw new Exception($"Unsupported {nameof(ParameterMode)}: {mode}")
                 };
             }
