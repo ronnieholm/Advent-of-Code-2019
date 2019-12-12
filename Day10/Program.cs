@@ -235,6 +235,9 @@ namespace Day10
 
             // Convert to and return degress for easier reasoning
             var degress = rad * (180 / Math.PI);
+
+            // https://stackoverflow.com/questions/18106156/modulo-of-a-number-python-vs-c-sharp
+            // In C# % is the remainder. To turn it into module, we need the addition.
             return (degress + 360) % 360;
         }
 
