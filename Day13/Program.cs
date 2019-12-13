@@ -47,7 +47,7 @@ namespace Day13
                         //     System.Threading.Thread.Sleep(10);
 
                         tileId = (int)o;    
-                        Console.SetCursorPosition(x, y);
+                        //Console.SetCursorPosition(x, y);
                         switch (tileId)
                         {
                             case 0:
