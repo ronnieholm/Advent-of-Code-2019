@@ -177,7 +177,7 @@ namespace Day10
 
         static Dictionary<Point, List<Point>> GetLinesOfSight(List<Point> map)
         {
-            // TODO: imporove O(n^3) suboptimal algorithm.
+            // TODO: imporove O(n^3) suboptimal algorithm: https://www.youtube.com/watch?v=5npf1JQYXs0            
             double Distance(Point a, Point b) => Math.Sqrt((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y));
             bool IsBetween(Point a, Point c, Point b) => Distance(a, b) + Distance(b, c) - Distance(a, c) < 0.0001;
 

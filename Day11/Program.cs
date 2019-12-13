@@ -71,9 +71,7 @@ namespace Day11
                 }                    
             }
 
-            var i1 = inputFn();
-            Debug.Assert(i1 == 0);
-
+            inputFn();
             outputFn(1);
             outputFn(0);
 
@@ -246,7 +244,6 @@ namespace Day11
                         var p = panels[(x,y)];
                         var c = p == 0 ? ' ' : '#';
                         s += c;
-
                     }
                 }
                 answer.Add(s);
