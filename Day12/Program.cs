@@ -231,6 +231,13 @@ namespace Day12
 
         static long Cycle(List<Moon> moons)    
         {
+            // Eventully position must return back to initial because it's a
+            // bijective map:
+            // https://www.reddit.com/r/adventofcode/comments/e9vfod/2019_day_12_i_see_everyone_solving_it_with_an/
+            // It can never return partway in because just as we can move
+            // forward in time, we can move backward. If we could return part
+            // way that would mean that one step backend could result in two
+            // different positions which it cannot.
             var ox = false;
             var oy = false;
             var oz = false;
