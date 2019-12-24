@@ -9,9 +9,16 @@ using System.Linq;
     Lizthegrey:
     https://www.twitch.tv/videos/521727650
 
+    Python Breath First Search Maze solving program
+    https://www.youtube.com/watch?v=ZuHW4fS60pc
+
+    Path Planning - A* (A-Star)
+    https://www.youtube.com/watch?v=icZj67PTFhc
+
+    https://github.com/jackmott/advent2019/blob/master/day_15/src/main.rs
+
     Use Dejstra path finding
     Use A* path finding
-
 */
 
 namespace Day15
@@ -105,7 +112,7 @@ namespace Day15
             var location = new Point(0, 0);
             var supply = new Point(0, 0);
             var rng = new Random();
-            var direction = rng.Next(1, 5);
+            var direction = 1;
             var candidate = Move(location, direction);
             
             long inputFn()
@@ -131,19 +138,29 @@ namespace Day15
                         // found oxygyn supply
                         map[candidate] = 2;
                         var supply = candidate;
+
+
+
                         DrawMap(map, candidate);
                         PerformBreadthFirstSearch(map, supply);
                         break;
                 }
 
+                
+
                 //DrawMap(map, candidate);
-                direction = rng.Next(1, 5);
+                //direction = rng.Next(1, 5);
                 candidate = Move(location, direction);                
             }
 
             var input = File.ReadAllText("Input.txt");
             var memory = LoadMemory(input);
             Execute(memory, inputFn, outputFn);
+        }
+
+        static void PerformDepthFirstSearch(Dictionary<Point, int> map, Point supply)
+        {
+
         }
 
         static void PerformBreadthFirstSearch(Dictionary<Point, int> map, Point supply)
