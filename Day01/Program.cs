@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Diagnostics;
+using System.Linq;
+using static System.Diagnostics.Debug;
 
 namespace Day01
 {
@@ -8,40 +10,38 @@ namespace Day01
     {
         static void Main(string[] args)
         {
-            var massOfModules = new List<int>();
-            var input = File.ReadAllLines("Input.txt");
-            foreach (var line in input)
-                massOfModules.Add(int.Parse(line));
+            var massOfModules = File.ReadAllLines("Input.txt").Select(int.Parse);
 
             // Part 1
-            Debug.Assert(FuelForModule(12) == 2);
-            Debug.Assert(FuelForModule(14) == 2);
-            Debug.Assert(FuelForModule(1969) == 654);
+            Assert(FuelForModule(12) == 2);
+            Assert(FuelForModule(14) == 2);
+            Assert(FuelForModule(1969) == 654);
 
-            var fuelForModules = 0;
-            foreach (var m in massOfModules)
-                fuelForModules += FuelForModule(m);
-            Debug.Assert(fuelForModules == 3295539);
+            var fuelForModules = Solve(FuelForModule, massOfModules);
+            Assert(fuelForModules == 3295539);
 
             // Part 2
-            Debug.Assert(FuelForModulesAndFuel(14) == 2);
-            Debug.Assert(FuelForModulesAndFuel(1969) == 966);
-            Debug.Assert(FuelForModulesAndFuel(100756) == 50346);
+            Assert(FuelForModulesAndFuel(14) == 2);
+            Assert(FuelForModulesAndFuel(1969) == 966);
+            Assert(FuelForModulesAndFuel(100756) == 50346);
 
-            var fuelForModulesAndFuel = 0;
-            foreach (var m in massOfModules)
-                fuelForModulesAndFuel += FuelForModulesAndFuel(m);            
-            Debug.Assert(fuelForModulesAndFuel == 4940441);
+            var fuelForModulesAndFuel = Solve(FuelForModulesAndFuel, massOfModules);
+            Assert(fuelForModulesAndFuel == 4940441);
         }
+
+        static int Solve(Func<int, int> fuelFn, IEnumerable<int> masses) =>
+            masses.Aggregate(0, (acc, m) => acc + fuelFn(m));
 
         static int FuelForModule(int mass) => mass / 3 - 2;
 
         static int FuelForModulesAndFuel(int mass)
         {
-            var fuel = mass / 3 - 2;
-            if (fuel <= 0)
-                return 0;
-            return fuel + FuelForModulesAndFuel(fuel);
+            var fuel = FuelForModule(mass);
+            return fuel switch
+            {
+                <= 0 => 0,
+                _ => fuel + FuelForModulesAndFuel(fuel)
+            };
         }
     }
-}it s
+}
