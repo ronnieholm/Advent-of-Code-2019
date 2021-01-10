@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Diagnostics;
+using static System.Diagnostics.Debug;
+using static System.Console;
 
 namespace Day02
 {
@@ -9,8 +10,10 @@ namespace Day02
         static void Main(string[] args)
         {
             Test();
-            Part1();
-            Part2();
+
+            var input = File.ReadAllText("Input.txt");
+            Part1(input);
+            Part2(input);
         }       
 
         static void Test()
@@ -19,35 +22,31 @@ namespace Day02
             var m2 = LoadMemory("3500,9,10,70,2,3,11,0,99,30,40,50");
             Execute(m1);
 
-            Debug.Assert(m1.Length == m2.Length);
+            Assert(m1.Length == m2.Length);
             for (var i = 0; i < m1.Length; i++)
-                Debug.Assert(m1[i] == m2[i]);
+                Assert(m1[i] == m2[i]);
         }
 
         static int[] LoadMemory(string s)
         {
             var strings = s.Split(',');
             var memory = new int[strings.Length];
-
             for (var i = 0; i < strings.Length; i++)
                 memory[i] = int.Parse(strings[i]);
-
             return memory;
         }
 
-        static void Part1()
+        static void Part1(string input)
         {
-            var input = File.ReadAllText("Input.txt");
             var memory = LoadMemory(input);
             memory[1] = 12;
             memory[2] = 2;
             Execute(memory);
-            Debug.Assert(memory[0] == 3654868);
+            Assert(memory[0] == 3654868);
         }
 
-        static void Part2()
+        static void Part2(string input)
         {
-            var input = File.ReadAllText("Input.txt");
             for (var noun = 0; noun <= 99; noun++)
             {
                 for (var verb = 0; verb <= 99; verb++)
@@ -58,10 +57,9 @@ namespace Day02
                     Execute(memory);
                     if (memory[0] == 19690720)
                     {
-                        Debug.Assert(7014 == 100 * noun + verb);
+                        Assert(7014 == 100 * noun + verb);
                         break;
                     }
-
                 }
             }
         }
